@@ -1,4 +1,6 @@
 #!/bin/bash
+. prj-export-variables
+
 #load functions
 for FUNCTION in $1/functions/*; do
   . $FUNCTION

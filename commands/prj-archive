@@ -1,0 +1,26 @@
+#!/bin/bash
+. prj-export-variables
+
+if [ ! -d "$WORKING_DIR" ]; then
+  echo "working directory not set"
+  exit
+fi
+
+if [ ! -d "$ARCHIVE_DIR" ]; then
+  echo "archive directory not set"
+  exit
+fi
+
+if [ -d "$WORKING_DIR$1" ]; then
+  mv $WORKING_DIR$1 $ARCHIVE_DIR
+
+  # update sublime file
+  TEMP_FILE=$TEMP_DIR$1'.sublime-project.tmp'
+  cat $SUBLIME_DIR$1'.sublime-project' | sed -e $(echo "s/$(echo $WORKING_DIR | sed -e "s/\//\\\\\//g")/$(echo $ARCHIVE_DIR | sed -e "s/\//\\\\\//g")/") > $TEMP_FILE
+  mv $TEMP_FILE $SUBLIME_DIR$1'.sublime-project'
+  # update atom file
+elif [ -d "$ARCHIVE_DIR$1" ]; then
+  echo "project already archived"
+else
+  echo "project doesn't exists"
+fi

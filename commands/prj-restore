@@ -12,12 +12,12 @@ if [ ! -d "$ARCHIVE_DIR" ]; then
 fi
 
 if [ -d "$ARCHIVE_DIR$1" ]; then
-  mv $ARCHIVE_DIR$1 $WORKING_DIR
+  mv "$ARCHIVE_DIR$1" "$WORKING_DIR"
 
   # update sublime file
-  TEMP_FILE=$TEMP_DIR$1'.sublime-project.tmp'
-  cat $SUBLIME_DIR$1'.sublime-project' | sed -e $(echo "s/$(echo $ARCHIVE_DIR | sed -e "s/\//\\\\\//g")/$(echo $WORKING_DIR | sed -e "s/\//\\\\\//g")/") > $TEMP_FILE
-  mv $TEMP_FILE $SUBLIME_DIR$1'.sublime-project'
+  TEMP_FILE="$TEMP_DIR$1".sublime-project.tmp
+  cat "$SUBLIME_DIR$1".sublime-project | sed -e $(echo "s/$(echo $ARCHIVE_DIR | sed -e "s/\//\\\\\//g")/$(echo $WORKING_DIR | sed -e "s/\//\\\\\//g")/") > "$TEMP_FILE"
+  mv "$TEMP_FILE" "$SUBLIME_DIR$1".sublime-project
   # update atom file
 elif [ -d "$WORKING_DIR$1" ]; then
   echo "project already active"

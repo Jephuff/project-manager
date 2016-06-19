@@ -2,12 +2,12 @@
 function prj-start {
   . prj-export-variables
 
-  prj-cd $1
+  prj-cd "$1"
   if [ $? != 0 ]; then
     exit 1
   fi
 
-  if [ $EDITOR == 'sublime' ]; then
+  if [ "$EDITOR" == 'sublime' ]; then
     if hash sublime 2>/dev/null; then
       sublime "$SUBLIME_DIR$1.sublime-project" &
     elif hash subl 2>/dev/null; then
@@ -15,7 +15,7 @@ function prj-start {
     else
       echo "could not find sublime command"
     fi
-  elif [ $EDITOR == 'atom' ]; then
+  elif [ "$EDITOR" == 'atom' ]; then
     if hash atom 2>/dev/null; then
       atom . &
     else
@@ -23,7 +23,7 @@ function prj-start {
     fi
   fi
 
-  if [ $GIT_CLIENT == 'source tree' ]; then
+  if [ "$GIT_CLIENT" == 'source tree' ]; then
     if hash stree 2>/dev/null; then
       stree "$git_folder" &
     else

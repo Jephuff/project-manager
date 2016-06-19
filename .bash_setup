@@ -2,8 +2,8 @@
 . prj-export-variables
 
 #load functions
-for FUNCTION in $1/functions/*; do
-  . $FUNCTION
+for FUNCTION in "$1"/functions/*; do
+  . "$FUNCTION"
 done
 
 ###add completion
@@ -14,4 +14,4 @@ complete -F _prj-name prj-remove
 complete -F _prj-name prj-restore
 
 #add commands
-export PATH=$PATH:$1/commands
+export PATH=$PATH:"$1"/commands

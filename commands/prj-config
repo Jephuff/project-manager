@@ -28,70 +28,70 @@ done
 
 
 # set sublime dir
-if [[ $SUBLIME ]]; then
-  CURRENT_SUBLIME=$SUBLIME_DIR
-  [ "${SUBLIME/#\//}" != "$SUBLIME" ] || SUBLIME="$CALLING_DIR/$SUBLIME"
-  SUBLIME=${SUBLIME%/}/
+if [[ "$SUBLIME" ]]; then
+  CURRENT_SUBLIME="$SUBLIME_DIR"
+  [ "${SUBLIME/#\//}" != "$SUBLIME" ] || SUBLIME="$CALLING_DIR"/"$SUBLIME"
+  SUBLIME="${SUBLIME%/}"/
   mkdir -p "$SUBLIME"
-  cd $ARCHIVE_DIR
+  cd "$ARCHIVE_DIR"
   if [[ $(ls) ]]; then
     for pname in *; do
-      mv $CURRENT_SUBLIME$pname".sublime-project" $SUBLIME
+      mv "$CURRENT_SUBLIME$pname".sublime-project "$SUBLIME"
     done
   fi
-  cd $WORKING_DIR
+  cd "$WORKING_DIR"
   if [[ $(ls) ]]; then
     for pname in *; do
-      mv $CURRENT_SUBLIME$pname".sublime-project" $SUBLIME
+      mv "$CURRENT_SUBLIME$pname".sublime-project "$SUBLIME"
     done
   fi
-  echo "$SUBLIME" > $SUBLIME_DIR_FILE
-  CURRENT_SUBLIME=$SUBLIME
+  echo "$SUBLIME" > "$SUBLIME_DIR_FILE"
+  CURRENT_SUBLIME="$SUBLIME"
 fi
 
 # set archive dir
-if [[ $WORKING ]]; then
+if [[ "$WORKING" ]]; then
   CURRENT_WORKING="$WORKING_DIR"
-  [ "${WORKING/#\//}" != "$WORKING" ] || WORKING="$CALLING_DIR/$WORKING"
-  WORKING=${WORKING%/}/
+  [ "${WORKING/#\//}" != "$WORKING" ] || WORKING="$CALLING_DIR"/"$WORKING"
+  WORKING="${WORKING%/}"/
   mkdir -p "$WORKING"
-  cd $WORKING_DIR
+  cd "$WORKING_DIR"
   if [ ! -z $WORKING_DIR ]; then
     if [[ $(ls) ]]; then
       for pname in *; do
-        mv $CURRENT_WORKING"/"$pname $WORKING
-        TEMP_FILE=$TEMP_DIR$pname'.sublime-project.tmp'
+        mv "$CURRENT_WORKING"/"$pname" "$WORKING"
+        TEMP_FILE="$TEMP_DIR$pname".sublime-project.tmp
         SED_STRING=$(echo "s/$(echo $CURRENT_WORKING | sed -e "s/\//\\\\\//g")/$(echo $WORKING | sed -e "s/\//\\\\\//g")/")
-        cat $CURRENT_SUBLIME$pname'.sublime-project' | sed -e $SED_STRING > $TEMP_FILE
-        mv $TEMP_FILE $CURRENT_SUBLIME$pname'.sublime-project'
+        cat "$CURRENT_SUBLIME$pname".sublime-project | sed -e $SED_STRING > "$TEMP_FILE"
+        mv "$TEMP_FILE" "$CURRENT_SUBLIME$pname".sublime-project
       done
     fi
   fi
-  echo $WORKING > $WORKING_DIR_FILE
+  echo "$WORKING" > "$WORKING_DIR_FILE"
 fi
 
 # set archive dir
-if [[ $ARCHIVE ]]; then
+if [[ "$ARCHIVE" ]]; then
   CURRENT_ARCHIVE="$ARCHIVE_DIR"
-  [ "${ARCHIVE/#\//}" != "$ARCHIVE" ] || ARCHIVE="$CALLING_DIR/$ARCHIVE"
-  ARCHIVE=${ARCHIVE%/}/
+  [ "${ARCHIVE/#\//}" != "$ARCHIVE" ] || ARCHIVE="$CALLING_DIR"/"$ARCHIVE"
+  ARCHIVE="${ARCHIVE%/}"/
   mkdir -p "$ARCHIVE"
-  cd $ARCHIVE_DIR
-  if [ ! -z $ARCHIVE_DIR ]; then
+  cd "$ARCHIVE_DIR"
+  if [ ! -z "$ARCHIVE_DIR" ]; then
     if [[ $(ls) ]]; then
       for pname in *; do
-        mv $CURRENT_ARCHIVE"/"$pname $ARCHIVE
-        TEMP_FILE=$TEMP_DIR$pname'.sublime-project.tmp'
+        mv "$CURRENT_ARCHIVE"/"$pname" "$ARCHIVE"
+        TEMP_FILE="$TEMP_DIR$pname".sublime-project.tmp
         SED_STRING=$(echo "s/$(echo $CURRENT_ARCHIVE | sed -e "s/\//\\\\\//g")/$(echo $ARCHIVE | sed -e "s/\//\\\\\//g")/")
-        cat $CURRENT_SUBLIME$pname'.sublime-project' | sed -e $SED_STRING > $TEMP_FILE
-        mv $TEMP_FILE $CURRENT_SUBLIME$pname'.sublime-project'
+        cat "$CURRENT_SUBLIME$pname".sublime-project | sed -e $SED_STRING > "$TEMP_FILE"
+        mv "$TEMP_FILE" "$CURRENT_SUBLIME$pname".sublime-project
       done
     fi
   fi
-  echo $ARCHIVE > $ARCHIVE_DIR_FILE
+  echo "$ARCHIVE" > "$ARCHIVE_DIR_FILE"
 fi
 
 # set archive dir
-if [[ $NEW_EDITOR ]]; then
-  echo $NEW_EDITOR > $EDITOR_FILE
+if [[ "$NEW_EDITOR" ]]; then
+  echo "$NEW_EDITOR" > "$EDITOR_FILE"
 fi

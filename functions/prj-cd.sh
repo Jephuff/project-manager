@@ -13,9 +13,9 @@ function prj-cd {
   fi
 
   if [ -d "$WORKING_DIR$1" ]; then
-    cd $WORKING_DIR$1
+    cd "$WORKING_DIR$1"
   elif [ -d "$ARCHIVE_DIR$1" ]; then
-    cd $ARCHIVE_DIR$1
+    cd "$ARCHIVE_DIR$1"
   else
     echo "project doesn't exists"
     exit 1

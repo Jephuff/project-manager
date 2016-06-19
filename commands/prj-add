@@ -30,14 +30,14 @@ done
 ### Make Sublime Project File
 printf "Do you want a sublime project made?(default: y): "
 read MAKE_SUBLIME
-if [[ $MAKE_SUBLIME != "n" ]]; then
+if [[ "$MAKE_SUBLIME" != "n" ]]; then
   MAKE_SUBLIME="y"
 fi
 
 ### Make Atom Project File
 printf "Do you want a atom project manager entry made?(default: y): "
 read MAKE_ATOM_PROJECT_MANAGER
-if [[ $MAKE_ATOM_PROJECT_MANAGER != "n" ]]; then
+if [[ "$MAKE_ATOM_PROJECT_MANAGER" != "n" ]]; then
   MAKE_ATOM_PROJECT_MANAGER="y"
 fi
 
@@ -48,8 +48,8 @@ while [[ $CONTINUE = true ]]; do
   printf "Enter git repos, empty to finish: "
   read GIT
   # check if name is valid
-  if [[ $GIT != "" ]]; then
-    GIT_REPOS+=($GIT)
+  if [[ "$GIT" != "" ]]; then
+    GIT_REPOS+=("$GIT")
   else
     CONTINUE=false
   fi
@@ -58,30 +58,30 @@ done
 
 ### setup project
 #make project folders
-PROJECT_DIR=$WORKING_DIR$NAME
-PROJECT_CONFIG_DIR=$PROJECT_DIR/.config/
-PROJECT_NEW_TAB_COMMANDS=$PROJECT_CONFIG_DIR/new-tab-commands
-mkdir -p $PROJECT_CONFIG_DIR
-touch $PROJECT_NEW_TAB_COMMANDS
+PROJECT_DIR="$WORKING_DIR$NAME"
+PROJECT_CONFIG_DIR="$PROJECT_DIR"/.config/
+PROJECT_NEW_TAB_COMMANDS="$PROJECT_CONFIG_DIR"/new-tab-commands
+mkdir -p "$PROJECT_CONFIG_DIR"
+touch "$PROJECT_NEW_TAB_COMMANDS"
 
 
 #make sublime
-SUBLIME_FILE=$SUBLIME_DIR$NAME.sublime-project
-if [[ $MAKE_SUBLIME = "y" ]]; then
-  echo -e '{\n  "folders":\n  [\n   {\n     "path": "'$PROJECT_DIR'"\n    }\n ]\n}' > $SUBLIME_FILE
+SUBLIME_FILE="$SUBLIME_DIR$NAME".sublime-project
+if [[ "$MAKE_SUBLIME" = "y" ]]; then
+  echo -e '{\n  "folders":\n  [\n   {\n     "path": "'"$PROJECT_DIR"'"\n    }\n ]\n}' > "$SUBLIME_FILE"
 fi
 
-if [[ $MAKE_ATOM_PROJECT_MANAGER ]]; then
-  echo -e '"'"$NAME"'":\n  title: "'"$NAME"'"\n  paths: [\n    "'"$PROJECT_DIR"'"\n  ]' >> $ATOM_PROJECT_MANAGER_FILE
+if [[ "$MAKE_ATOM_PROJECT_MANAGER" ]]; then
+  echo -e '"'"$NAME"'":\n  title: "'"$NAME"'"\n  paths: [\n    "'"$PROJECT_DIR"'"\n  ]' >> "$ATOM_PROJECT_MANAGER_FILE"
 fi
 
 #pull git repos
 for git in "${GIT_REPOS[@]}"; do
-  cd $PROJECT_DIR
-  git clone $git
+  cd "$PROJECT_DIR"
+  git clone "$git"
   git_folder=$(echo $git | grep -oh "/[^/]*$")
   git_folder=$(echo ${git_folder:1:$(expr ${#git_folder} - 5)})
-  cd $git_folder
+  cd "$git_folder"
 
   #check for package.json
   if [[ -a package.json ]]; then
@@ -95,27 +95,27 @@ for git in "${GIT_REPOS[@]}"; do
 
   #check for gulp
   if [[ -a gulpfile.js ]]; then
-    echo "cd \"$PROJECT_DIR/$git_folder\" && gulp" >> $PROJECT_NEW_TAB_COMMANDS
+    echo "cd \"$PROJECT_DIR/$git_folder\" && gulp" >> "$PROJECT_NEW_TAB_COMMANDS"
   fi
 
   #check for grunt
   if [[ -a Gruntfile.js ]]; then
-    echo "cd \"$PROJECT_DIR/$git_folder\" && grunt" >> $PROJECT_NEW_TAB_COMMANDS
+    echo "cd \"$PROJECT_DIR/$git_folder\" && grunt" >> "$PROJECT_NEW_TAB_COMMANDS"
   fi
 
   if [[ -a package.json ]]; then
     npm run | grep "^\s*start$"
     if [ $? == 0 ]; then
-      echo "cd \"$PROJECT_DIR/$git_folder\" && npm start" >> $PROJECT_NEW_TAB_COMMANDS
+      echo "cd \"$PROJECT_DIR/$git_folder\" && npm start" >> "$PROJECT_NEW_TAB_COMMANDS"
     else
       npm run | grep "^\s*test$"
       if [ $? == 0 ]; then
-        echo "cd \"$PROJECT_DIR/$git_folder\" && npm test" >> $PROJECT_NEW_TAB_COMMANDS
+        echo "cd \"$PROJECT_DIR/$git_folder\" && npm test" >> "$PROJECT_NEW_TAB_COMMANDS"
       fi
     fi
   fi
 done
 
 #write start script
-echo -e $startScript > $PROJECT_DIR'/start.sh'
-sudo chmod 755 $PROJECT_DIR'/start.sh'
+echo -e $startScript > "$PROJECT_DIR"/start.sh
+sudo chmod 755 "$PROJECT_DIR"/start.sh

@@ -20,6 +20,10 @@ while [[ $# > 1 ]]; do
     NEW_EDITOR="$2"
     shift
     ;;
+  -g|--git-client)
+    NEW_GIT_CLIENT="$2"
+    shift
+    ;;
   *)
     ;;
   esac
@@ -94,4 +98,9 @@ fi
 # set archive dir
 if [[ "$NEW_EDITOR" ]]; then
   echo "$NEW_EDITOR" > "$EDITOR_FILE"
+fi
+
+# set archive dir
+if [[ "$NEW_GIT_CLIENT" ]]; then
+  echo "$NEW_GIT_CLIENT" > "$GIT_CLIENT_FILE"
 fi

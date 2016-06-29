@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#add commands
+export PATH=$PATH:"$1"/commands
+
 . prj-export-variables
 
 #load functions
@@ -12,6 +16,3 @@ complete -F _prj-name prj-cd
 complete -F _prj-name prj-archive
 complete -F _prj-name prj-remove
 complete -F _prj-name prj-restore
-
-#add commands
-export PATH=$PATH:"$1"/commands

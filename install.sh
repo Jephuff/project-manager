@@ -11,5 +11,3 @@ if [ $? != 0 ]; then
 fi
 
 $COMMAND
-
-mkdir -p "$PROJECT_MANAGER_PROJECTS_DIR"

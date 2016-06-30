@@ -36,7 +36,9 @@ function prj-start {
   fi
 
   while read -r script; do
-    if hash osascript 2>/dev/null; then
+    if hash new-tab 2>/dev/null; then
+      new-tab "$script"
+    elif hash osascript 2>/dev/null; then
       osascript -e "activate application \"iTerm\""
       osascript -e "tell application \"System Events\" to keystroke \"t\" using command down"
       osascript -e "tell application \"iTerm\" to tell session -1 of current terminal to write text \""$script"\""

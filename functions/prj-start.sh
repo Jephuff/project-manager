@@ -3,8 +3,9 @@ function prj-start {
   . prj-export-variables
 
   prj-cd "$1"
+
   if [ $? != 0 ]; then
-    exit 1
+    return 1
   fi
 
   if [ "$EDITOR" == 'sublime' ]; then
@@ -50,4 +51,6 @@ function prj-start {
 
 
   ./start.sh
+
+  return 0
 }

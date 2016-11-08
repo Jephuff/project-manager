@@ -11,15 +11,8 @@ function prj-cd {
     return 1
   fi
 
-  if [ ! -d "$ARCHIVE_DIR" ]; then
-    echo "archive directory not set"
-    return 1
-  fi
-
   if [ -d "$WORKING_DIR$1" ]; then
     cd "$WORKING_DIR$1"
-  elif [ -d "$ARCHIVE_DIR$1" ]; then
-    cd "$ARCHIVE_DIR$1"
   else
     echo "project doesn't exists"
     return 1

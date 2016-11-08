@@ -1,0 +1,51 @@
+#!/bin/bash
+. prj-export-variables
+
+PROJECT_NAME="$1"
+GIT_REPO="$2"
+
+PROJECT_DIR="$WORKING_DIR$PROJECT_NAME"
+PROJECT_CONFIG_DIR="$PROJECT_DIR"/.config/
+PROJECT_NEW_TAB_COMMANDS="$PROJECT_CONFIG_DIR"/new-tab-commands
+
+if [ ! -d "$WORKING_DIR" ]; then
+  echo "working directory not set"
+  exit
+fi
+
+if [ ! -d "$WORKING_DIR$PROJECT_NAME" ]; then
+  echo "Project does not exist"
+  exit
+fi
+
+cd "$WORKING_DIR"
+
+git_dir_name=$(echo $GIT_REPO | grep -oh "/[^/]*$")
+git_dir_name=$(echo ${git_dir_name:1:$(expr ${#git_dir_name} - 5)})
+git_dir_path="$PROJECT_NAME"/"$git_dir_name"
+git submodule add "$GIT_REPO" "$git_dir_path"
+
+cd "$git_dir_path"
+
+#check for gulp
+if [[ -a gulpfile.js ]]; then
+  echo "cd \"$git_dir_path\" && gulp" >> "$PROJECT_NEW_TAB_COMMANDS"
+fi
+
+#check for grunt
+if [[ -a Gruntfile.js ]]; then
+  echo "cd \"$git_dir_path\" && grunt" >> "$PROJECT_NEW_TAB_COMMANDS"
+fi
+
+if [[ -a package.json ]]; then
+  npm i
+  npm run | grep "^\s*start$"
+  if [ $? == 0 ]; then
+    echo "cd \"$git_dir_path\" && npm start" >> "$PROJECT_NEW_TAB_COMMANDS"
+  fi
+fi
+
+#check for bower
+if [[ -a bower.json ]]; then
+  bower i
+fi

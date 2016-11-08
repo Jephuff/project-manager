@@ -8,37 +8,20 @@ function prj-start {
     return 1
   fi
 
-  if [ "$EDITOR" == 'sublime' ]; then
-    if hash sublime 2>/dev/null; then
-      sublime "$SUBLIME_DIR$1.sublime-project" &
-    elif hash subl 2>/dev/null; then
-      subl "$SUBLIME_DIR$1.sublime-project" &
-    else
-      echo "could not find sublime command"
-    fi
-  elif [ "$EDITOR" == 'atom' ]; then
-    if hash atom 2>/dev/null; then
-      atom .
-    else
-      echo "no atom command"
-    fi
+  if [ "$EDITOR" != "" ]; then
+    $EDITOR . &
   fi
 
-  if [ "$GIT_CLIENT" == 'source tree' ]; then
-    if hash stree 2>/dev/null; then
-      while read -r repo; do
-        stree "$repo" &
-      done < ".config/git-repos"
-    else
-      echo "stree command not found"
-    fi
-  else
-    echo "no git client set"
+  if [ "$GIT_CLIENT" != "" ]; then
+    while read -r repo; do
+      $GIT_CLIENT "$repo" &
+    done < ".config/git-repos"
   fi
 
   while read -r script; do
-    if hash new-tab 2>/dev/null; then
-      new-tab "$script"
+    echo "$script" >> grep /^\s#/ 2> /dev/null
+    if hash prj-new-tab 2>/dev/null; then
+      prj-new-tab "$script"
     elif hash osascript 2>/dev/null; then
       osascript -e "activate application \"iTerm\""
       osascript -e "tell application \"System Events\" to keystroke \"t\" using command down"
@@ -46,11 +29,9 @@ function prj-start {
     else
       $script
     fi
-  done < ".config/new-tab-commands"
+  done < $(cat .config/new-tab-commands | grep -v "^\s*\(#\|$\)")
 
-
-
-  ./start.sh
+  ./.config/start.sh
 
   return 0
 }

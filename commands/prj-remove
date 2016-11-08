@@ -6,19 +6,9 @@ if [ ! -d "$WORKING_DIR" ]; then
   exit
 fi
 
-if [ ! -d "$ARCHIVE_DIR" ]; then
-  echo "archive directory not set"
-  exit
-fi
-
 if [ -d "$WORKING_DIR$1" ]; then
-  sudo rm -r "$WORKING_DIR$1"
-  rm "$SUBLIME_DIR$1".sublime-project
-  # remove atom project
-elif [ -d "$ARCHIVE_DIR$1" ]; then
-  sudo rm -r "$ARCHIVE_DIR$1"
-  rm "$SUBLIME_DIR$1".sublime-project
-  # remove atom project
+  cd "$WORKING_DIR"
+  git rm "$1"
 else
   echo "project doesn't exists"
 fi

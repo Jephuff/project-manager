@@ -18,18 +18,15 @@ function prj-start {
     done < ".config/git-repos"
   fi
 
-  while read -r script; do
-    echo "$script" >> grep /^\s#/ 2> /dev/null
-    if hash prj-new-tab 2>/dev/null; then
-      prj-new-tab "$script"
-    elif hash osascript 2>/dev/null; then
-      osascript -e "activate application \"iTerm\""
-      osascript -e "tell application \"System Events\" to keystroke \"t\" using command down"
-      osascript -e "tell application \"iTerm\" to tell session -1 of current terminal to write text \""$script"\""
-    else
-      $script
+  cat .config/new-tab-commands | grep -v "^\s*\(#\|$\)" | while read -r script; do
+    if [ $? == 0 ]; then
+      if hash prj-new-tab 2>/dev/null; then
+        prj-new-tab "${script//\"/\\\"}"
+      else
+        echo run: $script
+      fi
     fi
-  done < $(cat .config/new-tab-commands | grep -v "^\s*\(#\|$\)")
+  done
 
   ./.config/start.sh
 

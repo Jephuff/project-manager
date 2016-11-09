@@ -1,0 +1,88 @@
+#!/bin/bash
+. prj-export-variables
+
+### Get Working directory
+while [[ -z $NEW_WORKING_DIR ]]; do
+  printf "Enter working directory($WORKING_DIR): "
+  read NEW_WORKING_DIR
+
+  if [ "$NEW_WORKING_DIR" == "" ]; then
+    NEW_WORKING_DIR="$WORKING_DIR"
+  fi
+
+  # check if dir already exists
+  if [ -d "$NEW_WORKING_DIR" ]; then
+    if [ "$(ls -A "$NEW_WORKING_DIR")" ]; then
+      if [ "$NEW_WORKING_DIR" != "$WORKING_DIR" ]; then
+        NEW_WORKING_DIR=""
+        echo "directory already exists and is not empty"
+      fi
+    fi
+  fi
+done
+
+### Get editor
+while [[ -z $NEW_EDITOR ]]; do
+  printf "Enter editor command to use($EDITOR): "
+  read NEW_EDITOR
+
+  if [ "$NEW_EDITOR" == "" ]; then
+    NEW_EDITOR="$EDITOR"
+  fi
+
+  # check if editor exists already exists
+  if ! hash "$NEW_EDITOR" 2>/dev/null; then
+    echo "$NEW_EDITOR does not exist"
+    NEW_EDITOR=""
+  fi
+done
+
+### Get git client
+while [[ -z $NEW_GIT_CLIENT ]]; do
+  printf "Enter git client command to use($GIT_CLIENT): "
+  read NEW_GIT_CLIENT
+
+  if [ "$NEW_GIT_CLIENT" == "" ]; then
+    NEW_GIT_CLIENT="$GIT_CLIENT"
+  fi
+
+  # check if editor exists already exists
+  if ! hash "$NEW_GIT_CLIENT" 2>/dev/null; then
+    echo "$NEW_GIT_CLIENT does not exist"
+    NEW_GIT_CLIENT=""
+  fi
+done
+
+### use yarn?
+if hash yarn 2> /dev/null; then
+  if [ "$USE_YARN" == "" ]; then
+    USE_YARN="y"
+  fi
+  while [[ -z $NEW_USE_YARN ]]; do
+    printf "Do you want to use yarn instead of npm y/n?($USE_YARN): "
+    read NEW_USE_YARN
+
+    if [ "$NEW_USE_YARN" == "" ]; then
+      NEW_USE_YARN="$USE_YARN"
+    fi
+
+    # check if editor exists already exists
+    case $(echo "$NEW_USE_YARN" | tr '[:upper:]' '[:lower:]') in
+    y|yes)
+      NEW_USE_YARN="y"
+      ;;
+    n|no)
+      NEW_USE_YARN="n"
+      ;;
+    *)
+      echo "must be either y or n"
+      NEW_USE_YARN=""
+      ;;
+    esac
+  done
+else
+  NEW_USE_YARN="n"
+fi
+
+
+prj-config -w "$NEW_WORKING_DIR" -e "$NEW_EDITOR" -g "$NEW_GIT_CLIENT" -y "$NEW_USE_YARN"

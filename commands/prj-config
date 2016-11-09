@@ -16,6 +16,10 @@ while [[ $# > 1 ]]; do
     NEW_GIT_CLIENT="$2"
     shift
     ;;
+  -y|--use-yarn)
+    NEW_USE_YARN="$2"
+    shift
+    ;;
   *)
     ;;
   esac
@@ -24,19 +28,20 @@ done
 
 # set working dir
 if [[ "$WORKING" ]]; then
-  CURRENT_WORKING="$WORKING_DIR"
   [ "${WORKING/#\//}" != "$WORKING" ] || WORKING="$CALLING_DIR"/"$WORKING"
   WORKING="${WORKING%/}"/
   mkdir -p "$WORKING"
-  cd "$WORKING_DIR"
-  if [ ! -z $WORKING_DIR ]; then
-    mv "$WORKING_DIR"/* "$WORKING"
-    mv "$WORKING_DIR"/.* "$WORKING" 2> /dev/null
-  else
-    cd "$WORKING"
-    git init
+  if [ "$WORKING" != "$WORKING_DIR" ]; then
+    cd "$WORKING_DIR"
+    if [ ! -z $WORKING_DIR ]; then
+      mv "$WORKING_DIR"/* "$WORKING"
+      mv "$WORKING_DIR"/.* "$WORKING" 2> /dev/null
+    else
+      cd "$WORKING"
+      git init
+    fi
+    echo "$WORKING" > "$WORKING_DIR_FILE"
   fi
-  echo "$WORKING" > "$WORKING_DIR_FILE"
 fi
 
 # set editor
@@ -47,4 +52,8 @@ fi
 # set git client
 if [[ "$NEW_GIT_CLIENT" ]]; then
   echo "$NEW_GIT_CLIENT" > "$GIT_CLIENT_FILE"
+fi
+
+if [[ "$NEW_USE_YARN" ]]; then
+  echo "$NEW_USE_YARN" > "$USE_YARN_FILE"
 fi

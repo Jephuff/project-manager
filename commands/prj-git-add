@@ -40,7 +40,7 @@ fi
 if [[ -a package.json ]]; then
   if [ "$USE_YARN" == "y" ]; then
     yarn
-    node -e "console.log(require('./package.json').scripts.start || '')" | grep "." >/dev/null 2>&1
+    node -e "console.log((require('./package.json').scripts || {}).start || '')" | grep "." >/dev/null 2>&1
     if [ $? == 0 ]; then
       echo "cd \"$git_dir_path\" && yarn run start" >> "$PROJECT_NEW_TAB_COMMANDS"
     fi
